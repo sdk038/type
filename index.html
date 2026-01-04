@@ -15,7 +15,12 @@
             --border: rgba(255, 255, 255, 0.1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            outline: none;
+        }
 
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
@@ -28,7 +33,13 @@
             overflow-x: hidden;
         }
 
-        .container { width: 100%; max-width: 800px; margin: 0 auto; flex: 1; padding-bottom: 60px; }
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            flex: 1;
+            padding-bottom: 60px;
+        }
 
         .game-card {
             background: var(--card-bg);
@@ -36,7 +47,7 @@
             border-radius: 20px;
             padding: 25px;
             margin-bottom: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .text-display {
@@ -49,8 +60,15 @@
             word-wrap: break-word;
         }
 
-        .correct { color: #fff; }
-        .current { background: rgba(253, 187, 45, 0.3); border-radius: 4px; color: var(--primary); }
+        .correct {
+            color: #fff;
+        }
+
+        .current {
+            background: rgba(253, 187, 45, 0.3);
+            border-radius: 4px;
+            color: var(--primary);
+        }
 
         /* Поле ввода */
         #typingInput {
@@ -63,24 +81,79 @@
             font-size: 1.2rem;
             margin-bottom: 20px;
         }
-        #typingInput:focus { border-color: var(--primary); }
+
+        #typingInput:focus {
+            border-color: var(--primary);
+        }
 
         /* Кнопки */
-        .btn { padding: 12px 25px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
-        .btn-primary { background: var(--primary); color: #000; width: 100%; font-size: 16px; margin-top: 10px; }
-        .btn-exit { background: #ff4e50; color: #fff; font-size: 12px; text-transform: uppercase; }
+        .btn {
+            padding: 12px 25px;
+            border-radius: 12px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+            width: 100%;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .btn-exit {
+            background: #ff4e50;
+            color: #fff;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
 
         /* Статистика */
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-        .stat-item { background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px; text-align: center; }
-        .stat-val { display: block; font-weight: 900; color: var(--primary); font-size: 1.3rem; }
-        .stat-label { font-size: 9px; color: #888; text-transform: uppercase; }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-val {
+            display: block;
+            font-weight: 900;
+            color: var(--primary);
+            font-size: 1.3rem;
+        }
+
+        .stat-label {
+            font-size: 9px;
+            color: #888;
+            text-transform: uppercase;
+        }
 
         /* Машинки */
-        .track { height: 2px; background: var(--border); position: relative; margin: 35px 0 15px; }
-        .car { position: absolute; top: -28px; font-size: 24px; transition: 0.5s linear; }
+        .track {
+            height: 2px;
+            background: var(--border);
+            position: relative;
+            margin: 35px 0 15px;
+        }
 
-        /* Логотип внизу */
+        .car {
+            position: absolute;
+            top: -28px;
+            font-size: 24px;
+            transition: 0.5s linear;
+        }
+
+
         .footer-logo {
             position: fixed;
             bottom: 20px;
@@ -93,17 +166,35 @@
             pointer-events: none;
         }
 
-        #countdown { font-size: 5rem; text-align: center; color: var(--primary); height: 85px; font-weight: 900; }
-        #restartTimer { color: var(--primary); font-weight: bold; text-align: center; margin-bottom: 10px; }
+        #countdown {
+            font-size: 5rem;
+            text-align: center;
+            color: var(--primary);
+            height: 85px;
+            font-weight: 900;
+        }
+
+        #restartTimer {
+            color: var(--primary);
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div id="lobby" class="game-card" style="margin-top: 50px; text-align: center;">
-        <h2 style="margin-bottom: 25px;">Prince</h2>
-        <input type="text" id="playerName" placeholder="Твоё имя" style="width:100%; padding:15px; border-radius:10px; border:none; margin-bottom:10px; background:#111; color:#fff;">
-        <input type="text" id="roomCode" placeholder="Код комнаты" style="width:100%; padding:15px; border-radius:10px; border:none; margin-bottom:20px; background:#111; color:#fff;">
+        <h2 style="margin-bottom: 25px;">Мафтуна эт игра для определяет того что кто быстрее печатает</h2>
+        <span>Забей лучше просто свое имя и нажми создать</span>
+        <br>
+        <br>
+        <input type="text" id="playerName" placeholder="Мафтунка"
+               style="width:100%; padding:15px; border-radius:10px; border:none; margin-bottom:10px; background:#111; color:#fff;">
+        <input type="text" id="roomCode"
+               placeholder="Код комнаты(ты можешь тут забить id комнаты и можешь зайти по этому id)"
+               style="width:100%; padding:15px; border-radius:10px; border:none; margin-bottom:20px; background:#111; color:#fff;">
         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
             <button class="btn btn-primary" onclick="createRoom()" style="margin:0">СОЗДАТЬ</button>
             <button class="btn" onclick="joinRoom()" style="background:#333; color:#fff;">ВОЙТИ</button>
@@ -118,17 +209,23 @@
 
         <div id="restartTimer"></div>
         <div id="countdown"></div>
-        <button id="startBtn" class="btn btn-primary" style="display:none; margin-bottom:20px;" onclick="requestStart()">ЗАПУСТИТЬ МОТОРЫ 🚀</button>
+        <button id="startBtn" class="btn btn-primary" style="display:none; margin-bottom:20px;"
+                onclick="requestStart()">Тут ты запускаешь игру жанм 🚀
+        </button>
 
         <div class="game-card">
             <div id="textDisplay" class="text-display">Загрузка трассы...</div>
-            <input type="text" id="typingInput" placeholder="Приготовься..." autocomplete="off" autocorrect="off" spellcheck="false" disabled>
+            <input type="text" id="typingInput" placeholder="Приготовься..." autocomplete="off" autocorrect="off"
+                   spellcheck="false" disabled>
 
             <div class="stats-grid">
                 <div class="stat-item"><span id="wpm" class="stat-val">0</span><span class="stat-label">WPM</span></div>
-                <div class="stat-item"><span id="timer" class="stat-val">00:00</span><span class="stat-label">Time</span></div>
-                <div class="stat-item"><span id="acc" class="stat-val">100%</span><span class="stat-label">Acc</span></div>
-                <div class="stat-item"><span id="progress" class="stat-val">0%</span><span class="stat-label">Prog</span></div>
+                <div class="stat-item"><span id="timer" class="stat-val">00:00</span><span
+                        class="stat-label">Time</span></div>
+                <div class="stat-item"><span id="acc" class="stat-val">100%</span><span class="stat-label">Acc</span>
+                </div>
+                <div class="stat-item"><span id="progress" class="stat-val">0%</span><span
+                        class="stat-label">Prog</span></div>
             </div>
         </div>
 
@@ -172,53 +269,60 @@
     function initView() {
         document.getElementById('lobby').style.display = 'none';
         document.getElementById('gameView').style.display = 'block';
-        document.getElementById('roomInfo').innerText = "КОД: " + state.roomID;
-        if(state.isHost) document.getElementById('startBtn').style.display = 'block';
+        document.getElementById('roomInfo').innerText = "Это Id возьми его и скинь мне: " + state.roomID;
+        if (state.isHost) document.getElementById('startBtn').style.display = 'block';
     }
 
     async function createRoom() {
         const n = document.getElementById('playerName').value.trim();
-        if(!n) return alert("Имя!");
+        if (!n) return alert("Имя!");
         const r = Math.random().toString(36).substring(2, 6).toUpperCase();
         state = {...state, roomID: r, playerName: n, isHost: true};
         await db.ref('rooms/' + r).set({
-            text: phrases[Math.floor(Math.random()*phrases.length)],
-            status: 'waiting', players: { [n]: { pos: 0, wpm: 0, finished: false } }
+            text: phrases[Math.floor(Math.random() * phrases.length)],
+            status: 'waiting', players: {[n]: {pos: 0, wpm: 0, finished: false}}
         });
-        initView(); listen(r);
+        initView();
+        listen(r);
     }
 
     async function joinRoom() {
         const r = document.getElementById('roomCode').value.trim().toUpperCase();
         const n = document.getElementById('playerName').value.trim();
-        if(!r || !n) return alert("Заполни поля!");
+        if (!r || !n) return alert("Заполни поля!");
         const snap = await db.ref(`rooms/${r}`).once('value');
-        if(!snap.exists()) return alert("Комната не найдена!");
+        if (!snap.exists()) return alert("Комната не найдена!");
         state = {...state, roomID: r, playerName: n, isHost: false};
-        await db.ref(`rooms/${r}/players/${n}`).update({ pos: 0, wpm: 0, finished: false });
-        initView(); listen(r);
+        await db.ref(`rooms/${r}/players/${n}`).update({pos: 0, wpm: 0, finished: false});
+        initView();
+        listen(r);
     }
 
-    function exitRoom() { location.reload(); }
+    function exitRoom() {
+        location.reload();
+    }
 
     function listen(r) {
         db.ref('rooms/' + r).on('value', snap => {
-            const d = snap.val(); if(!d) return;
+            const d = snap.val();
+            if (!d) return;
             state.text = d.text;
             renderPlayers(d.players);
-            if(d.status === 'starting' && !state.counting) startCountdown();
-            if(d.status === 'racing' && !state.isRacing) startRace();
+            if (d.status === 'starting' && !state.counting) startCountdown();
+            if (d.status === 'racing' && !state.isRacing) startRace();
 
             // Проверка на окончание всеми игроками
             const pArray = Object.values(d.players);
             const everyoneFinished = pArray.every(p => p.finished);
-            if(everyoneFinished && d.status === 'racing' && !state.restarting) {
+            if (everyoneFinished && d.status === 'racing' && !state.restarting) {
                 startAutoRestart();
             }
         });
     }
 
-    function requestStart() { db.ref(`rooms/${state.roomID}/status`).set('starting'); }
+    function requestStart() {
+        db.ref(`rooms/${state.roomID}/status`).set('starting');
+    }
 
     function startCountdown() {
         state.counting = true;
@@ -227,22 +331,28 @@
         const t = setInterval(() => {
             document.getElementById('countdown').innerText = c > 0 ? c : 'GO!';
             c--;
-            if(c < -1) {
-                clearInterval(t); document.getElementById('countdown').innerText = '';
-                if(state.isHost) db.ref(`rooms/${state.roomID}/status`).set('racing');
+            if (c < -1) {
+                clearInterval(t);
+                document.getElementById('countdown').innerText = '';
+                if (state.isHost) db.ref(`rooms/${state.roomID}/status`).set('racing');
                 state.counting = false;
             }
         }, 1000);
     }
 
     function startRace() {
-        state.isRacing = true; state.restarting = false; state.startTime = Date.now(); state.pos = 0;
+        state.isRacing = true;
+        state.restarting = false;
+        state.startTime = Date.now();
+        state.pos = 0;
         document.getElementById('restartTimer').innerText = "";
         const inp = document.getElementById('typingInput');
-        inp.disabled = false; inp.value = ""; inp.focus();
+        inp.disabled = false;
+        inp.value = "";
+        inp.focus();
         state.timerInterval = setInterval(() => {
             const diff = Math.floor((Date.now() - state.startTime) / 1000);
-            document.getElementById('timer').innerText = `${Math.floor(diff/60).toString().padStart(2,'0')}:${(diff%60).toString().padStart(2,'0')}`;
+            document.getElementById('timer').innerText = `${Math.floor(diff / 60).toString().padStart(2, '0')}:${(diff % 60).toString().padStart(2, '0')}`;
         }, 1000);
     }
 
@@ -252,10 +362,10 @@
         const rT = setInterval(() => {
             document.getElementById('restartTimer').innerText = `Новая игра через ${timeLeft}...`;
             timeLeft--;
-            if(timeLeft < 0) {
+            if (timeLeft < 0) {
                 clearInterval(rT);
-                if(state.isHost) {
-                    const newText = phrases[Math.floor(Math.random()*phrases.length)];
+                if (state.isHost) {
+                    const newText = phrases[Math.floor(Math.random() * phrases.length)];
                     db.ref(`rooms/${state.roomID}`).update({
                         status: 'starting',
                         text: newText
@@ -263,7 +373,7 @@
                     // Сброс игроков
                     db.ref(`rooms/${state.roomID}/players`).once('value', s => {
                         const players = s.val();
-                        for(let p in players) {
+                        for (let p in players) {
                             db.ref(`rooms/${state.roomID}/players/${p}`).update({pos: 0, wpm: 0, finished: false});
                         }
                     });
@@ -275,13 +385,13 @@
     function renderPlayers(players) {
         const list = document.getElementById('playersList');
         list.innerHTML = '';
-        for(let n in players) {
+        for (let n in players) {
             const p = players[n];
             const perc = (p.pos / state.text.length) * 100;
             list.innerHTML += `
                 <div style="margin-bottom:15px">
                     <div style="display:flex; justify-content:space-between; font-size:11px; opacity:0.6">
-                        <span>${n} ${n===state.playerName?'(ТЫ)':''}</span><span>${p.wpm} WPM</span>
+                        <span>${n} ${n === state.playerName ? '(ТЫ)' : ''}</span><span>${p.wpm} WPM</span>
                     </div>
                     <div class="track"><div class="car" style="left:${perc}%">🏎️</div></div>
                 </div>`;
@@ -292,7 +402,7 @@
     function updateDisplayText() {
         const d = document.getElementById('textDisplay');
         let h = "";
-        for(let i=0; i<state.text.length; i++) {
+        for (let i = 0; i < state.text.length; i++) {
             let cls = i < state.pos ? "correct" : (i === state.pos ? "current" : "");
             h += `<span class="${cls}">${state.text[i]}</span>`;
         }
@@ -300,22 +410,26 @@
     }
 
     document.getElementById('typingInput').addEventListener('input', e => {
-        if(!state.isRacing) return;
+        if (!state.isRacing) return;
         const val = e.target.value;
         const expected = state.text.substring(state.pos, state.pos + val.length);
 
-        if(val === expected) {
-            if(val.endsWith(" ") || state.pos + val.length === state.text.length) {
+        if (val === expected) {
+            if (val.endsWith(" ") || state.pos + val.length === state.text.length) {
                 state.pos += val.length;
                 e.target.value = "";
-                const wpm = Math.round((state.pos/5)/((Date.now()-state.startTime)/60000)) || 0;
+                const wpm = Math.round((state.pos / 5) / ((Date.now() - state.startTime) / 60000)) || 0;
                 document.getElementById('wpm').innerText = wpm;
-                document.getElementById('progress').innerText = Math.round((state.pos/state.text.length)*100) + '%';
+                document.getElementById('progress').innerText = Math.round((state.pos / state.text.length) * 100) + '%';
 
                 const isFin = state.pos === state.text.length;
-                db.ref(`rooms/${state.roomID}/players/${state.playerName}`).update({pos:state.pos, wpm:wpm, finished: isFin});
+                db.ref(`rooms/${state.roomID}/players/${state.playerName}`).update({
+                    pos: state.pos,
+                    wpm: wpm,
+                    finished: isFin
+                });
 
-                if(isFin) {
+                if (isFin) {
                     state.isRacing = false;
                     clearInterval(state.timerInterval);
                     e.target.disabled = true;
