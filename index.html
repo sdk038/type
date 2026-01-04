@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TypeRacer Online</title>
+    <title>TypeRacer Pro Online</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -22,557 +21,306 @@
             color: #fff;
         }
 
-        .container {
-            max-width: 1200px;
-            width: 100%;
-        }
+        .container { max-width: 900px; width: 100%; }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 3em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .game-info {
-            background: rgba(255,255,255,0.95);
-            padding: 20px;
+        .game-info, .players-list, .text-display, .input-area, .stat-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px;
+            padding: 20px;
             margin-bottom: 20px;
-            color: #333;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-
-        .room-section {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .room-section input {
-            flex: 1;
-            min-width: 200px;
-            padding: 12px;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .room-section button {
-            padding: 12px 24px;
-            background: #667eea;
             color: white;
+        }
+
+        input {
+            background: rgba(255, 255, 255, 0.9);
             border: none;
+            padding: 12px;
             border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .room-section button:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
-        }
-
-        .players-list {
-            background: rgba(255,255,255,0.95);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
             color: #333;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            outline: none;
         }
 
-        .player-race {
-            margin: 15px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            position: relative;
-        }
-
-        .player-name {
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
             font-weight: bold;
-            margin-bottom: 8px;
-            color: #667eea;
+            transition: 0.3s;
         }
+
+        button:hover { opacity: 0.8; transform: translateY(-2px); }
 
         .race-track {
-            height: 40px;
-            background: #e9ecef;
-            border-radius: 20px;
+            height: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
             position: relative;
-            overflow: hidden;
+            margin-top: 25px;
+            margin-bottom: 10px;
         }
 
         .race-car {
             position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 24px;
             transition: left 0.3s ease;
-        }
-
-        .text-display {
-            background: rgba(255,255,255,0.95);
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 20px;
             font-size: 24px;
-            line-height: 1.8;
-            color: #333;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-            text-align: center;
+            top: -25px;
+            margin-left: -12px;
         }
 
-        .text-display span {
-            padding: 2px 0;
-        }
-
-        .correct {
-            color: #28a745;
-            background: rgba(40,167,69,0.1);
-        }
-
-        .incorrect {
-            color: #dc3545;
-            background: rgba(220,53,69,0.2);
-        }
-
-        .current {
-            border-bottom: 3px solid #667eea;
-            animation: blink 1s infinite;
-        }
+        .text-display { font-size: 22px; line-height: 1.6; text-align: center; }
+        .correct { color: #4ade80; text-shadow: 0 0 5px rgba(74, 222, 128, 0.5); }
+        .current { border-bottom: 3px solid #fdbb2d; animation: blink 1s infinite; }
 
         @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
+            50% { border-color: transparent; }
         }
 
-        .input-area {
-            background: rgba(255,255,255,0.95);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-
-        .input-area input {
-            width: 100%;
-            padding: 15px;
-            font-size: 20px;
-            border: 3px solid #667eea;
-            border-radius: 10px;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .input-area input:focus {
-            border-color: #764ba2;
-            box-shadow: 0 0 20px rgba(102,126,234,0.3);
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-box {
-            background: rgba(255,255,255,0.95);
-            padding: 20px;
-            border-radius: 10px;
+        #countdown {
+            font-size: 60px;
             text-align: center;
-            color: #333;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-        }
-
-        .stat-label {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 5px;
-        }
-
-        .stat-value {
-            font-size: 32px;
+            color: #fdbb2d;
             font-weight: bold;
-            color: #667eea;
+            height: 80px;
         }
 
-        .countdown {
-            font-size: 48px;
-            text-align: center;
-            margin: 30px 0;
-            color: #ffd700;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .winner-message {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            font-size: 32px;
-            font-weight: bold;
-            margin: 20px 0;
-            animation: celebrate 0.5s ease;
-        }
-
-        @keyframes celebrate {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        .status {
-            text-align: center;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-
-        .status.waiting {
-            background: rgba(255,193,7,0.2);
-            color: #856404;
-        }
-
-        .status.racing {
-            background: rgba(40,167,69,0.2);
-            color: #155724;
-        }
+        .stats-container { display: flex; justify-content: space-around; gap: 20px; }
+        .stat-box { flex: 1; text-align: center; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #fdbb2d; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🏁 TypeRacer Online</h1>
 
-        <div class="game-info">
-            <div class="room-section">
-                <input type="text" id="roomCode" placeholder="Введите код комнаты">
-                <input type="text" id="playerName" placeholder="Ваше имя">
-                <button onclick="joinRoom()">Присоединиться</button>
-                <button onclick="createRoom()">Создать комнату</button>
-            </div>
-            <div id="roomInfo" style="margin-top: 10px; font-weight: bold;"></div>
-            <div id="gameStatus" class="status" style="display: none;"></div>
+<div class="container">
+    <h1>🏎️ TypeRacer PRO Online</h1>
+
+    <div class="game-info">
+        <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <input type="text" id="playerName" placeholder="Твое имя" style="flex: 1;">
+            <input type="text" id="roomCode" placeholder="Код для входа" style="flex: 1;">
         </div>
-
-        <div class="players-list" id="playersList"></div>
-
-        <div id="countdown" class="countdown" style="display: none;"></div>
-
-        <div class="text-display" id="textDisplay">
-            Присоединитесь к комнате или создайте новую, чтобы начать!
+        <div style="display: flex; gap: 10px;">
+            <button onclick="createRoom()" style="background: #4ade80; flex: 1;">Создать новую гонку</button>
+            <button onclick="joinRoom()" style="background: #60a5fa; flex: 1;">Войти в комнату</button>
         </div>
-
-        <div class="input-area">
-            <input type="text" id="typingInput" placeholder="Начните печатать..." disabled>
-        </div>
-
-        <div class="stats">
-            <div class="stat-box">
-                <div class="stat-label">Скорость (WPM)</div>
-                <div class="stat-value" id="wpm">0</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Точность</div>
-                <div class="stat-value" id="accuracy">100%</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-label">Прогресс</div>
-                <div class="stat-value" id="progress">0%</div>
-            </div>
-        </div>
+        <div id="roomDisplay" style="margin-top: 15px; text-align: center; font-size: 18px; color: #fdbb2d;"></div>
     </div>
 
-    <script>
-        const texts = [
-            "Быстрая коричневая лиса перепрыгивает через ленивую собаку. Программирование - это искусство превращения кофе в код.",
-            "Жизнь подобна езде на велосипеде. Чтобы сохранить равновесие, вы должны продолжать двигаться вперед к своим целям.",
-            "Единственный способ сделать великую работу - это любить то, что вы делаете. Успех не окончателен, неудача не фатальна.",
-            "Инновации отличают лидера от последователя. Будущее принадлежит тем, кто верит в красоту своих мечтаний и идей."
-        ];
+    <div id="playersList"></div>
 
-        let gameState = {
-            roomCode: '',
-            playerName: '',
-            players: {},
-            currentText: '',
-            currentIndex: 0,
-            startTime: null,
-            errors: 0,
-            totalChars: 0,
-            isGameActive: false,
-            countdownActive: false
-        };
+    <div id="countdown"></div>
 
-        const input = document.getElementById('typingInput');
-        const display = document.getElementById('textDisplay');
+    <div class="text-display" id="textDisplay">Введите имя и создайте комнату, чтобы начать!</div>
 
-        async function createRoom() {
-            const name = document.getElementById('playerName').value.trim();
-            if (!name) {
-                alert('Введите ваше имя!');
-                return;
+    <div class="input-area">
+        <input type="text" id="typingInput" style="width: 100%; font-size: 20px;" placeholder="Ждите старта..." disabled>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box">WPM: <br><span id="wpm" class="stat-value">0</span></div>
+        <div class="stat-box">Прогресс: <br><span id="progress" class="stat-value">0%</span></div>
+    </div>
+</div>
+
+<script>
+    // 1. КОНФИГУРАЦИЯ FIREBASE (Твои ключи)
+    const firebaseConfig = {
+        apiKey: "AIzaSyCX5cv94WSVGJfX9Vddgxrqgg9CEH_QgvA",
+        authDomain: "prince-10014.firebaseapp.com",
+        databaseURL: "https://prince-10014-default-rtdb.firebaseio.com",
+        projectId: "prince-10014",
+        storageBucket: "prince-10014.firebasestorage.app",
+        messagingSenderId: "900737897462",
+        appId: "1:900737897462:web:a29a4d2c8cada3a3f36dd7",
+        measurementId: "G-EP6VX4V6ET"
+    };
+
+    // Инициализация
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Переменные состояния
+    let state = {
+        roomID: null,
+        playerName: '',
+        text: '',
+        pos: 0,
+        startTime: null,
+        isRacing: false
+    };
+
+    const texts = [
+        "Программирование это не то что ты знаешь, а то что ты можешь выяснить.",
+        "Сложные задачи всегда имеют простые и легкие для понимания неправильные решения.",
+        "Лучший способ предсказать будущее это изобрести его самому прямо сейчас.",
+        "Успех это способность идти от одной неудачи к другой, не теряя энтузиазма."
+    ];
+
+    // Создание комнаты
+    async function createRoom() {
+        const name = document.getElementById('playerName').value.trim();
+        if (!name) return alert("Введите имя!");
+
+        const roomID = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const text = texts[Math.floor(Math.random() * texts.length)];
+
+        state.roomID = roomID;
+        state.playerName = name;
+        state.text = text;
+
+        await db.ref('rooms/' + roomID).set({
+            text: text,
+            status: 'waiting',
+            players: { [name]: { pos: 0, wpm: 0, finished: false } }
+        });
+
+        listenToRoom(roomID);
+    }
+
+    // Вход в комнату
+    async function joinRoom() {
+        const roomID = document.getElementById('roomCode').value.trim().toUpperCase();
+        const name = document.getElementById('playerName').value.trim();
+
+        if (!roomID || !name) return alert("Введите код комнаты и имя!");
+
+        const snapshot = await db.ref('rooms/' + roomID).once('value');
+        if (!snapshot.exists()) return alert("Комната не найдена!");
+
+        state.roomID = roomID;
+        state.playerName = name;
+        state.text = snapshot.val().text;
+
+        await db.ref(`rooms/${roomID}/players/${name}`).set({
+            pos: 0, wpm: 0, finished: false
+        });
+
+        listenToRoom(roomID);
+    }
+
+    // Следим за изменениями в базе данных
+    function listenToRoom(roomID) {
+        document.getElementById('roomDisplay').innerText = "ID КОМНАТЫ: " + roomID;
+
+        db.ref('rooms/' + roomID).on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (!data) return;
+
+            updatePlayersUI(data.players);
+
+            // Если в комнате 2+ игрока и никто еще не стартовал - запускаем отсчет
+            if (Object.keys(data.players).length >= 2 && data.status === 'waiting') {
+                startCountdown();
             }
 
-            const room = 'ROOM' + Math.random().toString(36).substr(2, 6).toUpperCase();
-            gameState.roomCode = room;
-            gameState.playerName = name;
-            gameState.currentText = texts[Math.floor(Math.random() * texts.length)];
-
-            await saveGameState();
-
-            document.getElementById('roomInfo').textContent = `Комната: ${room} | Игрок: ${name}`;
-            document.getElementById('roomCode').value = room;
-
-            updateDisplay();
-            pollGameState();
-            showStatus('Ожидание других игроков...', 'waiting');
-        }
-
-        async function joinRoom() {
-            const room = document.getElementById('roomCode').value.trim().toUpperCase();
-            const name = document.getElementById('playerName').value.trim();
-
-            if (!room || !name) {
-                alert('Введите код комнаты и ваше имя!');
-                return;
+            // Если статус сменился на racing - начинаем гонку
+            if (data.status === 'racing' && !state.isRacing && state.startTime === null) {
+                beginRace();
             }
+        });
+    }
 
-            try {
-                const existingState = await window.storage.get(`game:${room}`, true);
-                if (!existingState) {
-                    alert('Комната не найдена!');
-                    return;
-                }
+    // Обновление списка игроков и машинок
+    function updatePlayersUI(players) {
+        const list = document.getElementById('playersList');
+        list.innerHTML = '<h3 style="margin-bottom:10px;">🏎️ Участники:</h3>';
 
-                gameState.roomCode = room;
-                gameState.playerName = name;
+        for (let name in players) {
+            const p = players[name];
+            const perc = (p.pos / state.text.length) * 100;
+            const isMe = name === state.playerName;
 
-                const state = JSON.parse(existingState.value);
-                gameState.currentText = state.text;
-                gameState.players = state.players || {};
-
-                await saveGameState();
-
-                document.getElementById('roomInfo').textContent = `Комната: ${room} | Игрок: ${name}`;
-                updateDisplay();
-                pollGameState();
-                showStatus('Ожидание других игроков...', 'waiting');
-            } catch (error) {
-                alert('Ошибка подключения к комнате!');
-            }
-        }
-
-        async function saveGameState() {
-            if (!gameState.roomCode) return;
-
-            try {
-                const existingState = await window.storage.get(`game:${gameState.roomCode}`, true);
-                let state = existingState ? JSON.parse(existingState.value) : { players: {}, text: gameState.currentText };
-
-                state.players = state.players || {};
-                state.players[gameState.playerName] = {
-                    progress: gameState.currentIndex,
-                    total: gameState.currentText.length,
-                    finished: gameState.currentIndex >= gameState.currentText.length,
-                    wpm: calculateWPM(),
-                    timestamp: Date.now()
-                };
-                state.text = gameState.currentText;
-
-                await window.storage.set(`game:${gameState.roomCode}`, JSON.stringify(state), true);
-                updatePlayersList(state.players);
-            } catch (error) {
-                console.error('Error saving state:', error);
-            }
-        }
-
-        async function pollGameState() {
-            if (!gameState.roomCode) return;
-
-            try {
-                const existingState = await window.storage.get(`game:${gameState.roomCode}`, true);
-                if (existingState) {
-                    const state = JSON.parse(existingState.value);
-                    gameState.players = state.players || {};
-                    updatePlayersList(state.players);
-
-                    if (!gameState.isGameActive && !gameState.countdownActive && Object.keys(gameState.players).length >= 2) {
-                        const allPlayersActive = Object.values(gameState.players).some(p =>
-                            Date.now() - p.timestamp < 30000 && p.progress > 0
-                        );
-                        if (allPlayersActive && !gameState.isGameActive) {
-                            startCountdown();
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error polling state:', error);
-            }
-
-            setTimeout(pollGameState, 1000);
-        }
-
-        function showStatus(text, type) {
-            const status = document.getElementById('gameStatus');
-            status.textContent = text;
-            status.className = `status ${type}`;
-            status.style.display = 'block';
-        }
-
-        function startCountdown() {
-            if (gameState.countdownActive || gameState.isGameActive) return;
-
-            gameState.countdownActive = true;
-            showStatus('Гонка начинается!', 'racing');
-
-            const countdownEl = document.getElementById('countdown');
-            countdownEl.style.display = 'block';
-
-            let count = 3;
-            countdownEl.textContent = count;
-
-            const interval = setInterval(() => {
-                count--;
-                if (count > 0) {
-                    countdownEl.textContent = count;
-                } else if (count === 0) {
-                    countdownEl.textContent = 'ВПЕРЁД!';
-                } else {
-                    clearInterval(interval);
-                    countdownEl.style.display = 'none';
-                    startGame();
-                }
-            }, 1000);
-        }
-
-        function startGame() {
-            gameState.isGameActive = true;
-            gameState.countdownActive = false;
-            gameState.startTime = Date.now();
-            input.disabled = false;
-            input.focus();
-        }
-
-        function updateDisplay() {
-            if (!gameState.currentText) return;
-
-            let html = '';
-            for (let i = 0; i < gameState.currentText.length; i++) {
-                const char = gameState.currentText[i];
-                let className = '';
-
-                if (i < gameState.currentIndex) {
-                    className = 'correct';
-                } else if (i === gameState.currentIndex) {
-                    className = 'current';
-                }
-
-                html += `<span class="${className}">${char === ' ' ? '&nbsp;' : char}</span>`;
-            }
-
-            display.innerHTML = html;
-        }
-
-        function updatePlayersList(players) {
-            const list = document.getElementById('playersList');
-            let html = '<h3 style="margin-bottom: 15px;">🏎️ Гонщики</h3>';
-
-            for (const [name, data] of Object.entries(players)) {
-                const percent = ((data.progress / data.total) * 100).toFixed(1);
-                const isCurrentPlayer = name === gameState.playerName;
-
-                html += `
-                    <div class="player-race" style="${isCurrentPlayer ? 'border: 2px solid #667eea;' : ''}">
-                        <div class="player-name">
-                            ${name} ${isCurrentPlayer ? '(Вы)' : ''}
-                            ${data.finished ? '🏆' : ''}
-                            - ${data.wpm} WPM
-                        </div>
-                        <div class="race-track">
-                            <div class="race-car" style="left: ${percent}%">🏎️</div>
-                        </div>
+            list.innerHTML += `
+                <div style="margin-bottom:20px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 10px;">
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>${isMe ? '<b>(ВЫ)</b> ' : ''}${name}</span>
+                        <span>WPM: ${p.wpm} ${p.finished ? '🚩 ФИНИШ!' : ''}</span>
                     </div>
-                `;
-            }
-
-            list.innerHTML = html;
-
-            const winner = Object.entries(players).find(([name, data]) => data.finished);
-            if (winner && gameState.isGameActive) {
-                showWinner(winner[0]);
-            }
+                    <div class="race-track">
+                        <div class="race-car" style="left:${perc}%">🏎️</div>
+                    </div>
+                </div>
+            `;
         }
+        updateTextDisplay();
+    }
 
-        function showWinner(name) {
-            if (!document.getElementById('winnerMsg')) {
-                const msg = document.createElement('div');
-                msg.id = 'winnerMsg';
-                msg.className = 'winner-message';
-                msg.textContent = `🏆 ${name} победил! 🏆`;
-                document.querySelector('.container').insertBefore(msg, document.getElementById('playersList'));
+    // Визуальный отсчет
+    function startCountdown() {
+        db.ref(`rooms/${state.roomID}/status`).set('starting');
+        let count = 3;
+        const timer = setInterval(() => {
+            document.getElementById('countdown').innerText = count > 0 ? count : 'ГОНКА!';
+            count--;
+            if (count < -1) {
+                clearInterval(timer);
+                document.getElementById('countdown').innerText = '';
+                db.ref(`rooms/${state.roomID}/status`).set('racing');
             }
+        }, 1000);
+    }
+
+    // Начало гонки (разблокировка ввода)
+    function beginRace() {
+        state.isRacing = true;
+        state.startTime = Date.now();
+        const input = document.getElementById('typingInput');
+        input.disabled = false;
+        input.placeholder = "Печатайте текст здесь...";
+        input.focus();
+    }
+
+    // Подсветка текста (правильно/неправильно)
+    function updateTextDisplay() {
+        const el = document.getElementById('textDisplay');
+        let html = "";
+        for (let i = 0; i < state.text.length; i++) {
+            let cls = i < state.pos ? 'correct' : (i === state.pos ? 'current' : '');
+            let char = state.text[i];
+            html += `<span class="${cls}">${char}</span>`;
         }
+        el.innerHTML = html;
+    }
 
-        function calculateWPM() {
-            if (!gameState.startTime) return 0;
-            const timeInMinutes = (Date.now() - gameState.startTime) / 60000;
-            const wordsTyped = gameState.currentIndex / 5;
-            return Math.round(wordsTyped / timeInMinutes) || 0;
-        }
+    // Обработка ввода
+    document.getElementById('typingInput').addEventListener('input', (e) => {
+        if (!state.isRacing) return;
 
-        function updateStats() {
-            document.getElementById('wpm').textContent = calculateWPM();
+        const val = e.target.value;
+        const lastChar = val[val.length - 1];
+        const expectedChar = state.text[state.pos];
 
-            const accuracy = gameState.totalChars > 0
-                ? ((gameState.totalChars - gameState.errors) / gameState.totalChars * 100).toFixed(1)
-                : 100;
-            document.getElementById('accuracy').textContent = accuracy + '%';
+        if (lastChar === expectedChar) {
+            state.pos++;
+            e.target.value = ''; // Очищаем поле для следующего символа (или слова)
 
-            const progress = ((gameState.currentIndex / gameState.currentText.length) * 100).toFixed(1);
-            document.getElementById('progress').textContent = progress + '%';
-        }
+            // Считаем WPM (слов в минуту)
+            const timePassed = (Date.now() - state.startTime) / 60000;
+            const wpm = Math.round((state.pos / 5) / timePassed) || 0;
+            const finished = state.pos === state.text.length;
 
-        input.addEventListener('input', async (e) => {
-            if (!gameState.isGameActive) {
-                if (e.target.value.length > 0 && Object.keys(gameState.players).length >= 2) {
-                    startCountdown();
-                }
-                return;
+            // Отправляем прогресс в Firebase
+            db.ref(`rooms/${state.roomID}/players/${state.playerName}`).update({
+                pos: state.pos,
+                wpm: wpm,
+                finished: finished
+            });
+
+            if (finished) {
+                state.isRacing = false;
+                document.getElementById('typingInput').disabled = true;
+                document.getElementById('typingInput').placeholder = "Поздравляем! Вы финишировали!";
             }
 
-            const typed = e.target.value;
-            const expected = gameState.currentText.slice(0, typed.length);
+            document.getElementById('wpm').innerText = wpm;
+            document.getElementById('progress').innerText = Math.round((state.pos / state.text.length) * 100) + '%';
+        } else {
+            e.target.value = '';
+        }
+    });
+</script>
 
-            gameState.totalChars++;
-
-            if (typed === expected) {
-                gameState.currentIndex = typed.length;
-                updateDisplay();
-                updateStats();
-
-                if (gameState.currentIndex >= gameState.currentText.length) {
-                    gameState.isGameActive = false;
-                    input.disabled = true;
-                    showStatus('Вы финишировали! 🎉', 'racing');
-                }
-
-                await saveGameState();
-            } else {
-                gameState.errors++;
-                e.target.value = expected;
-            }
-        });
-
-        input.addEventListener('paste', (e) => {
-            e.preventDefault();
-        });
-    </script>
 </body>
 </html>
