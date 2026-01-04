@@ -257,7 +257,7 @@
         "Нимааааа гап жала",
         "Мафтуна не обисуй пиши",
         "дададададдада",
-        "НИмаааааааааа гап"
+        "Тут не знал че написать, короче тоже пиши чтоб победить ))"
     ];
 
     let state = {
@@ -269,7 +269,7 @@
     function initView() {
         document.getElementById('lobby').style.display = 'none';
         document.getElementById('gameView').style.display = 'block';
-        document.getElementById('roomInfo').innerText = "Это Id возьми его и скинь мне: " + state.roomID;
+        document.getElementById('roomInfo').innerText = "Это Id возьми его и скинь мне чтоб я тоже зашел: " + state.roomID;
         if (state.isHost) document.getElementById('startBtn').style.display = 'block';
     }
 
