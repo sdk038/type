@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpeedRacer | Простой вход</title>
+    <title>SpeedRacer | Вход</title>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
     
@@ -12,8 +12,8 @@
             --primary: #00f2ff;
             --secondary: #7000ff;
             --bg: #050510;
-            --card-bg: rgba(20, 20, 35, 0.7);
-            --border: rgba(255, 255, 255, 0.08);
+            --card-bg: rgba(20, 20, 35, 0.95);
+            --border: rgba(0, 242, 255, 0.3);
             --text-muted: #808090;
             --error: #ff4e50;
             --success: #22c55e;
@@ -38,18 +38,24 @@
 
         .container {
             width: 100%;
-            max-width: 450px;
+            max-width: 500px;
             padding: 20px;
         }
 
         .auth-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border);
             border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            padding: 50px 40px;
+            box-shadow: 0 25px 60px rgba(0, 242, 255, 0.15);
             position: relative;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
 
         .auth-card::before {
@@ -60,128 +66,173 @@
             width: 100%;
             height: 4px;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
+            animation: gradientFlow 3s ease infinite;
+            background-size: 200% 100%;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
         .logo {
             text-align: center;
-            font-size: 3rem;
-            margin-bottom: 10px;
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
 
         .title {
             text-align: center;
-            margin-bottom: 15px;
-            font-size: 2rem;
-            font-weight: 800;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+            font-weight: 900;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            font-family: 'Orbitron', monospace;
         }
 
         .subtitle {
             text-align: center;
             color: var(--text-muted);
-            margin-bottom: 30px;
-            font-size: 0.9rem;
+            margin-bottom: 40px;
+            font-size: 1rem;
         }
 
         .input-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .input-label {
             display: block;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+            font-size: 0.9rem;
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 1px;
         }
 
         .input-field {
             width: 100%;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.3);
+            padding: 18px 20px;
+            background: rgba(0, 0, 0, 0.5);
             border: 2px solid var(--border);
             border-radius: 12px;
             color: #fff;
-            font-size: 1rem;
+            font-size: 1.1rem;
             transition: all 0.3s;
+            font-weight: 500;
         }
 
         .input-field:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.15);
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.3);
+            transform: scale(1.02);
+        }
+
+        .input-field::placeholder {
+            color: var(--text-muted);
         }
 
         .btn {
             width: 100%;
-            padding: 16px;
+            padding: 20px;
             border-radius: 14px;
             border: none;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             text-transform: uppercase;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
             transition: all 0.3s;
-            font-size: 1rem;
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: #fff;
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 400px;
+            height: 400px;
         }
 
         .btn:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 242, 255, 0.6);
         }
 
         .btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
+            transform: none;
         }
 
         .message {
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 0.9rem;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            font-weight: 600;
             display: none;
+            animation: messageSlide 0.3s ease-out;
         }
 
-        .error {
-            background: rgba(255, 78, 80, 0.1);
-            border: 1px solid var(--error);
+        @keyframes messageSlide {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .message.error {
+            background: rgba(255, 78, 80, 0.15);
+            border: 2px solid var(--error);
             color: var(--error);
             display: block;
         }
 
-        .success {
-            background: rgba(34, 197, 94, 0.1);
-            border: 1px solid var(--success);
+        .message.success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 2px solid var(--success);
             color: var(--success);
             display: block;
         }
 
-        .info {
-            background: rgba(0, 242, 255, 0.1);
-            border: 1px solid var(--primary);
+        .message.info {
+            background: rgba(0, 242, 255, 0.15);
+            border: 2px solid var(--primary);
             color: var(--primary);
             display: block;
         }
 
-        .toggle-form {
+        .hint {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 25px;
             color: var(--text-muted);
             font-size: 0.9rem;
-        }
-
-        .toggle-form a {
-            color: var(--primary);
-            text-decoration: none;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .toggle-form a:hover {
-            text-decoration: underline;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .spinner {
@@ -193,57 +244,132 @@
             animation: spin 0.8s linear infinite;
             display: inline-block;
             margin-left: 10px;
+            vertical-align: middle;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
-        .admin-note {
-            background: rgba(253, 187, 45, 0.1);
-            border: 1px solid #fdbb2d;
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .feature {
+            text-align: center;
             padding: 15px;
+            background: rgba(0, 242, 255, 0.05);
             border-radius: 12px;
-            margin-top: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 5px 20px rgba(0, 242, 255, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-text {
             font-size: 0.85rem;
-            color: #fdbb2d;
+            color: var(--text-muted);
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid var(--success);
+            color: var(--success);
+            display: none;
+        }
+
+        .connection-status.connected {
+            display: block;
         }
     </style>
 </head>
 <body>
 
+<div class="connection-status" id="connectionStatus">
+    ⚡ Подключено к серверу
+</div>
+
 <div class="container">
     <div class="auth-card">
         <div class="logo">🏎️</div>
-        <h1 class="title" id="formTitle">Быстрый вход</h1>
-        <p class="subtitle">Упрощенная версия - без Firebase Auth</p>
+        <h1 class="title">SPEEDRACER</h1>
+        <p class="subtitle">Войти в гонку за секунды</p>
 
         <div id="message" class="message"></div>
 
-        <!-- Форма входа -->
         <div id="loginForm">
             <div class="input-group">
-                <label class="input-label">Имя пользователя</label>
-                <input type="text" id="username" class="input-field" placeholder="Введите ваше имя" maxlength="20" autocomplete="off">
+                <label class="input-label">👤 Имя пользователя</label>
+                <input 
+                    type="text" 
+                    id="username" 
+                    class="input-field" 
+                    placeholder="Введите ваше имя" 
+                    maxlength="20" 
+                    autocomplete="username"
+                    autofocus
+                >
             </div>
             <div class="input-group">
-                <label class="input-label">Пароль (опционально)</label>
-                <input type="password" id="password" class="input-field" placeholder="Для защиты аккаунта" autocomplete="off">
+                <label class="input-label">🔐 Пароль (необязательно)</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    class="input-field" 
+                    placeholder="Оставьте пустым для быстрого входа" 
+                    autocomplete="current-password"
+                >
             </div>
-            <button id="loginBtn" class="btn">Войти в игру</button>
+            <button id="loginBtn" class="btn">🚀 Войти в игру</button>
         </div>
 
-        <div class="toggle-form">
-            <span>Войти без пароля? Просто введите имя!</span>
+        <div class="hint">
+            💡 <strong>Совет:</strong> Можете не вводить пароль!<br>
+            Просто укажите имя и нажмите "Войти"
         </div>
 
-        <div class="admin-note">
-            💡 <strong>Для админов:</strong> После входа откройте Firebase Console и установите <code>isAdmin: true</code> для вашего пользователя
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-text">Быстрый вход</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-text">Безопасно</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🌍</div>
+                <div class="feature-text">5 языков</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🏆</div>
+                <div class="feature-text">Соревнования</div>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+    // Firebase конфигурация
     const firebaseConfig = {
         apiKey: "AIzaSyCX5cv94WSVGJfX9Vddgxrqgg9CEH_QgvA",
         authDomain: "prince-10014.firebaseapp.com",
@@ -254,8 +380,29 @@
         appId: "1:900737897462:web:a29a4d2c8cada3a3f36dd7"
     };
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+    let db;
+    let isFirebaseReady = false;
+
+    // Инициализация Firebase
+    try {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.database();
+        
+        // Проверяем подключение
+        db.ref('.info/connected').on('value', (snapshot) => {
+            if (snapshot.val() === true) {
+                isFirebaseReady = true;
+                document.getElementById('connectionStatus').classList.add('connected');
+                console.log('✅ Firebase подключен');
+            } else {
+                isFirebaseReady = false;
+                showMessage('⚠️ Проблема с подключением к серверу...', 'error');
+            }
+        });
+    } catch (error) {
+        console.error('❌ Ошибка инициализации Firebase:', error);
+        showMessage('❌ Ошибка подключения. Обновите страницу.', 'error');
+    }
 
     // Элементы
     const usernameInput = document.getElementById('username');
@@ -266,61 +413,102 @@
     // Проверка существующей сессии
     const savedUser = localStorage.getItem('speedracer_user');
     if (savedUser) {
-        const userData = JSON.parse(savedUser);
-        showMessage(`Добро пожаловать, ${userData.username}! Перенаправление...`, 'info');
-        setTimeout(() => {
-            window.location.href = 'game.html';
-        }, 1000);
+        try {
+            const userData = JSON.parse(savedUser);
+            showMessage(`👋 С возвращением, ${userData.username}!`, 'info');
+            setTimeout(() => {
+                window.location.href = 'game.html';
+            }, 800);
+        } catch (e) {
+            localStorage.removeItem('speedracer_user');
+        }
     }
 
     // Обработка входа
-    loginBtn.addEventListener('click', async () => {
+    async function handleLogin() {
         const username = usernameInput.value.trim();
         const password = passwordInput.value;
 
         // Валидация
         if (!username) {
-            showMessage('❌ Введите имя пользователя', 'error');
+            showMessage('❌ Пожалуйста, введите имя пользователя', 'error');
+            usernameInput.focus();
             return;
         }
 
         if (username.length < 2) {
             showMessage('❌ Имя должно содержать минимум 2 символа', 'error');
+            usernameInput.focus();
+            return;
+        }
+
+        if (username.length > 20) {
+            showMessage('❌ Имя слишком длинное (максимум 20 символов)', 'error');
+            return;
+        }
+
+        // Проверка на недопустимые символы (разрешены буквы, цифры, точки, тире, подчеркивания)
+        if (!/^[a-zA-Zа-яА-Я0-9._\-\s]+$/.test(username)) {
+            showMessage('❌ Используйте только буквы, цифры, точки и тире', 'error');
+            return;
+        }
+
+        if (!isFirebaseReady) {
+            showMessage('⏳ Подключение к серверу... Попробуйте через 2 секунды', 'error');
             return;
         }
 
         // Блокируем кнопку
         loginBtn.disabled = true;
-        loginBtn.innerHTML = 'Входим... <span class="spinner"></span>';
+        loginBtn.innerHTML = '⏳ Входим... <span class="spinner"></span>';
+        showMessage('🔄 Подключаемся к серверу...', 'info');
 
         try {
-            console.log('Попытка входа для:', username);
+            console.log('🚀 Начинаем вход для:', username);
 
-            // Генерируем ID на основе имени пользователя
+            // Генерируем ID
             const userId = username.toLowerCase().replace(/[^a-z0-9]/g, '');
             
-            // Проверяем существует ли пользователь
+            if (!userId) {
+                throw new Error('Невозможно создать ID пользователя');
+            }
+
+            // Проверяем существующего пользователя
             const userSnapshot = await db.ref(`simple_users/${userId}`).once('value');
             const existingUser = userSnapshot.val();
 
-            if (existingUser && existingUser.password && password !== existingUser.password) {
-                showMessage('❌ Неверный пароль для этого пользователя', 'error');
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = 'Войти в игру';
-                return;
+            // Проверка пароля
+            if (existingUser && existingUser.password) {
+                if (!password) {
+                    showMessage('🔐 Этот пользователь защищён паролем. Введите пароль.', 'error');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '🚀 Войти в игру';
+                    passwordInput.focus();
+                    return;
+                }
+                
+                if (password !== existingUser.password) {
+                    showMessage('❌ Неверный пароль', 'error');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '🚀 Войти в игру';
+                    passwordInput.focus();
+                    return;
+                }
             }
 
             // Получаем IP
             let userIP = 'unknown';
             try {
-                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipResponse = await fetch('https://api.ipify.org?format=json', {
+                    timeout: 3000
+                });
                 const ipData = await ipResponse.json();
                 userIP = ipData.ip;
             } catch (e) {
-                console.log('Не удалось получить IP');
+                console.log('ℹ️ Не удалось получить IP, продолжаем без него');
             }
 
-            // Создаем/обновляем данные пользователя
+            // Создаем данные пользователя
             const userData = {
                 username: username,
                 userId: userId,
@@ -330,6 +518,8 @@
                 isAdmin: existingUser?.isAdmin || false,
                 createdAt: existingUser?.createdAt || Date.now()
             };
+
+            console.log('💾 Сохраняем данные пользователя...');
 
             // Сохраняем в Firebase
             await db.ref(`simple_users/${userId}`).set(userData);
@@ -344,31 +534,49 @@
             // Сохраняем в localStorage
             localStorage.setItem('speedracer_user', JSON.stringify(userData));
 
-            console.log('Вход успешен!');
-            showMessage('✅ Успешный вход! Перенаправление...', 'success');
+            console.log('✅ Вход успешен!');
+            showMessage('✅ Успешный вход! Перенаправляем...', 'success');
 
             setTimeout(() => {
                 window.location.href = 'game.html';
-            }, 1500);
+            }, 1200);
 
         } catch (error) {
-            console.error('Ошибка:', error);
-            showMessage('❌ Ошибка входа: ' + error.message, 'error');
+            console.error('❌ Ошибка входа:', error);
+            
+            let errorMsg = 'Ошибка входа. ';
+            if (error.code === 'PERMISSION_DENIED') {
+                errorMsg += 'Нет прав доступа к базе данных.';
+            } else if (error.message.includes('network')) {
+                errorMsg += 'Проблема с сетью. Проверьте интернет.';
+            } else {
+                errorMsg += error.message || 'Попробуйте снова.';
+            }
+            
+            showMessage('❌ ' + errorMsg, 'error');
             loginBtn.disabled = false;
-            loginBtn.innerHTML = 'Войти в игру';
+            loginBtn.innerHTML = '🚀 Войти в игру';
         }
-    });
+    }
+
+    // Привязываем события
+    loginBtn.addEventListener('click', handleLogin);
 
     // Enter для отправки
-    passwordInput.addEventListener('keypress', (e) => {
+    usernameInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            loginBtn.click();
+            if (!usernameInput.value.trim()) return;
+            if (passwordInput.value || !document.activeElement || document.activeElement === usernameInput) {
+                handleLogin();
+            } else {
+                passwordInput.focus();
+            }
         }
     });
 
-    usernameInput.addEventListener('keypress', (e) => {
+    passwordInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            loginBtn.click();
+            handleLogin();
         }
     });
 
@@ -376,7 +584,19 @@
     function showMessage(text, type) {
         message.textContent = text;
         message.className = 'message ' + type;
+        
+        // Автоскрытие для info сообщений
+        if (type === 'info') {
+            setTimeout(() => {
+                message.className = 'message';
+            }, 3000);
+        }
     }
+
+    // Автофокус на первое поле
+    setTimeout(() => {
+        usernameInput.focus();
+    }, 300);
 </script>
 
 </body>

@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpeedRacer | Профиль</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --accent: #fdbb2d;
+            --bg: #050510;
+            --card-bg: rgba(20, 20, 35, 0.95);
+            --border: rgba(0, 242, 255, 0.3);
+            --text-muted: #808090;
+            --error: #ff4e50;
+            --success: #22c55e;
+        }
+
+        /* Светлая тема */
+        [data-theme="light"] {
+            --primary: #0066cc;
+            --secondary: #6b00cc;
+            --accent: #ff9800;
+            --bg: #f5f5f5;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --border: rgba(0, 0, 0, 0.1);
+            --text-muted: #666;
+            --error: #d32f2f;
+            --success: #388e3c;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            outline: none;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            background: var(--bg);
+            color: #fff;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        [data-theme="light"] body {
+            color: #333;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--primary);
+            border: 2px solid var(--border);
+        }
+
+        [data-theme="light"] .btn-secondary {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0, 242, 255, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        [data-theme="light"] .card-title {
+            color: var(--primary);
+        }
+
+        .user-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3);
+        }
+
+        .user-name {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        [data-theme="light"] .user-name {
+            color: #333;
+        }
+
+        .user-id {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .user-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(253, 187, 45, 0.2);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+        }
+
+        [data-theme="light"] .stat-item {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .stat-item:hover {
+            background: rgba(0, 242, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .stat-value {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: var(--primary);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        [data-theme="light"] .setting-item {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        .setting-item:hover {
+            background: rgba(0, 242, 255, 0.08);
+        }
+
+        .setting-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        [data-theme="light"] .setting-label {
+            color: #333;
+        }
+
+        .setting-icon {
+            font-size: 1.5rem;
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid var(--border);
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            left: 32px;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        [data-theme="light"] .lang-btn {
+            background: rgba(0, 0, 0, 0.05);
+            color: #666;
+        }
+
+        .lang-btn:hover {
+            background: rgba(0, 242, 255, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 242, 255, 0.3);
+            z-index: 10000;
+            animation: slideIn 0.3s ease-out;
+            display: none;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .logout-danger {
+            background: rgba(255, 78, 80, 0.1) !important;
+            color: var(--error) !important;
+            border-color: var(--error) !important;
+        }
+
+        .logout-danger:hover {
+            background: rgba(255, 78, 80, 0.2) !important;
+            box-shadow: 0 10px 30px rgba(255, 78, 80, 0.3) !important;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .title {
+                font-size: 2rem;
+            }
+            
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="notification" id="notification"></div>
+
+<div class="container">
+    <div class="header">
+        <h1 class="title">⚙️ Профиль и Настройки</h1>
+        <div class="nav-links">
+            <a href="game.html" class="btn btn-secondary">🏠 Главная</a>
+            <a href="race.html" class="btn btn-primary">🏁 Играть</a>
+        </div>
+    </div>
+
+    <div class="grid">
+        <!-- Профиль пользователя -->
+        <div class="card">
+            <div class="user-avatar" id="userAvatar">👤</div>
+            <h2 class="user-name" id="userName">Гость</h2>
+            <p class="user-id">ID: <span id="userId">---</span></p>
+            <div style="text-align: center;">
+                <span class="user-badge" id="userBadge" style="display: none;">👑 Администратор</span>
+            </div>
+        </div>
+
+        <!-- Статистика -->
+        <div class="card">
+            <h3 class="card-title">📊 Статистика</h3>
+            <div class="stat-item">
+                <span class="stat-label">Игр сыграно</span>
+                <span class="stat-value" id="gamesPlayed">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Лучший WPM</span>
+                <span class="stat-value" id="bestWpm">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Точность</span>
+                <span class="stat-value" id="avgAccuracy">0%</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Дата регистрации</span>
+                <span class="stat-value" id="joinDate" style="font-size: 0.9rem;">---</span>
+            </div>
+        </div>
+
+        <!-- Настройки темы и языка -->
+        <div class="card full-width">
+            <h3 class="card-title">🎨 Настройки</h3>
+            
+            <div class="setting-item">
+                <div class="setting-label">
+                    <span class="setting-icon">🌓</span>
+                    <div>
+                        <div style="font-weight: 800;">Светлая тема</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 3px;">
+                            Переключить на светлую тему оформления
+                        </div>
+                    </div>
+                </div>
+                <div class="toggle-switch" id="themeToggle" onclick="toggleTheme()"></div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-label">
+                    <span class="setting-icon">🌍</span>
+                    <div>
+                        <div style="font-weight: 800;">Язык печати</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 3px;">
+                            Выберите язык для тренировки печати
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="language-selector" style="margin-top: 15px;">
+                <button class="lang-btn active" data-lang="ru" onclick="changeLanguage('ru')">🇷🇺 Русский</button>
+                <button class="lang-btn" data-lang="en" onclick="changeLanguage('en')">🇬🇧 English</button>
+                <button class="lang-btn" data-lang="es" onclick="changeLanguage('es')">🇪🇸 Español</button>
+                <button class="lang-btn" data-lang="fr" onclick="changeLanguage('fr')">🇫🇷 Français</button>
+                <button class="lang-btn" data-lang="de" onclick="changeLanguage('de')">🇩🇪 Deutsch</button>
+            </div>
+        </div>
+
+        <!-- Действия -->
+        <div class="card full-width">
+            <h3 class="card-title">🔐 Управление аккаунтом</h3>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <button class="btn btn-secondary" onclick="changePassword()">🔑 Изменить пароль</button>
+                <a href="panel.html" class="btn btn-secondary" id="adminPanelBtn" style="display: none;">👑 Админ-панель</a>
+                <button class="btn logout-danger" onclick="logout()">🚪 Выйти из аккаунта</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Firebase конфигурация
+    const firebaseConfig = {
+        apiKey: "AIzaSyCX5cv94WSVGJfX9Vddgxrqgg9CEH_QgvA",
+        authDomain: "prince-10014.firebaseapp.com",
+        databaseURL: "https://prince-10014-default-rtdb.firebaseio.com",
+        projectId: "prince-10014",
+        storageBucket: "prince-10014.firebasestorage.app",
+        messagingSenderId: "900737897462",
+        appId: "1:900737897462:web:a29a4d2c8cada3a3f36dd7"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Проверка авторизации
+    const savedUser = localStorage.getItem('speedracer_user');
+    if (!savedUser) {
+        window.location.href = 'login.html';
+    }
+
+    const userData = JSON.parse(savedUser);
+
+    // Загрузка темы
+    const savedTheme = localStorage.getItem('speedracer_theme') || 'dark';
+    if (savedTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('themeToggle').classList.add('active');
+    }
+
+    // Загрузка языка
+    const savedLang = localStorage.getItem('speedracer_language') || 'ru';
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-lang="${savedLang}"]`)?.classList.add('active');
+
+    // Отображение информации о пользователе
+    document.getElementById('userName').textContent = userData.username;
+    document.getElementById('userId').textContent = userData.userId;
+
+    if (userData.isAdmin) {
+        document.getElementById('userBadge').style.display = 'inline-block';
+        document.getElementById('adminPanelBtn').style.display = 'inline-block';
+    }
+
+    // Дата регистрации
+    if (userData.createdAt) {
+        const date = new Date(userData.createdAt);
+        document.getElementById('joinDate').textContent = date.toLocaleDateString('ru-RU');
+    }
+
+    // Загрузка статистики из Firebase
+    db.ref(`simple_users/${userData.userId}/stats`).once('value', (snapshot) => {
+        const stats = snapshot.val();
+        if (stats) {
+            document.getElementById('gamesPlayed').textContent = stats.gamesPlayed || 0;
+            document.getElementById('bestWpm').textContent = stats.bestWpm || 0;
+            document.getElementById('avgAccuracy').textContent = (stats.avgAccuracy || 0) + '%';
+        }
+    });
+
+    // Переключение темы
+    function toggleTheme() {
+        const toggle = document.getElementById('themeToggle');
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        
+        if (currentTheme === 'light') {
+            document.documentElement.removeAttribute('data-theme');
+            toggle.classList.remove('active');
+            localStorage.setItem('speedracer_theme', 'dark');
+            showNotification('🌙 Темная тема активирована');
+        } else {
+            document.documentElement.setAttribute('data-theme', 'light');
+            toggle.classList.add('active');
+            localStorage.setItem('speedracer_theme', 'light');
+            showNotification('☀️ Светлая тема активирована');
+        }
+    }
+
+    // Смена языка
+    function changeLanguage(lang) {
+        localStorage.setItem('speedracer_language', lang);
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+        
+        const langNames = {
+            ru: 'Русский',
+            en: 'English',
+            es: 'Español',
+            fr: 'Français',
+            de: 'Deutsch'
+        };
+        
+        showNotification(`🌍 Язык изменен: ${langNames[lang]}`);
+    }
+
+    // Изменить пароль
+    function changePassword() {
+        const newPassword = prompt('Введите новый пароль (или оставьте пустым для быстрого входа):');
+        
+        if (newPassword !== null) {
+            db.ref(`simple_users/${userData.userId}`).update({
+                password: newPassword || null
+            }).then(() => {
+                userData.password = newPassword || null;
+                localStorage.setItem('speedracer_user', JSON.stringify(userData));
+                
+                if (newPassword) {
+                    showNotification('✅ Пароль успешно изменен');
+                } else {
+                    showNotification('✅ Пароль удален (быстрый вход)');
+                }
+            }).catch((error) => {
+                showNotification('❌ Ошибка: ' + error.message);
+            });
+        }
+    }
+
+    // Выход
+    function logout() {
+        if (confirm('Вы уверены, что хотите выйти?')) {
+            localStorage.removeItem('speedracer_user');
+            window.location.href = 'login.html';
+        }
+    }
+
+    // Уведомление
+    function showNotification(text) {
+        const notif = document.getElementById('notification');
+        notif.textContent = text;
+        notif.classList.add('show');
+        
+        setTimeout(() => {
+            notif.classList.remove('show');
+        }, 3000);
+    }
+
+    // Обновляем активность
+    db.ref(`simple_users/${userData.userId}`).update({
+        lastActivity: Date.now()
+    });
+</script>
+
+</body>
+</html>
